@@ -24,7 +24,7 @@ class Minefield:
         }
         valid_coords = all_coords.difference(invalid_coords)
         for i in range(self.__num_mines):
-            coord = random.sample(list(valid_coords), 1)[0]
+            coord = random.sample(valid_coords, 1)[0]
             valid_coords.remove(coord)
             self.__mined_cords.add(coord)
     
