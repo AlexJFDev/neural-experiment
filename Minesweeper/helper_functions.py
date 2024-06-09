@@ -1,4 +1,15 @@
 import numpy as np
+import field
+from minefield import Minefield
+
+def create_field_matrix(minefield: Minefield) -> np.ndarray:
+    field = minefield._get_field()
+    height, width = field.shape
+    for i in range(height):
+        for j in range(width):
+            if field[i, j] != -1:
+                pass # Check surroundings
+    print(field.shape)
 
 def reduce_matrix(matrix: np.ndarray, starting_row: int, column_index: int):
     column = (matrix[:, column_index])

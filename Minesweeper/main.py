@@ -1,11 +1,12 @@
 from minefield import Minefield
 from os import system
+import helper_functions
 
-if __name__ == "__main__":
-    rows = int(input('Rows: '))
-    cols = int(input('Columns: '))
+def play_game():
+    height = int(input('Height: '))
+    width = int(input('Width: '))
     mines = int(input('Mines: '))
-    field = Minefield(rows, cols, mines)
+    field = Minefield(height, width, mines)
 
     print('Give input in the form of a command followed by a coordinate.')
     print('Commands: flag, unflag, reveal, check')
@@ -33,4 +34,9 @@ if __name__ == "__main__":
         if (command == 'unflag'): field.unflag(row, col)
         if (command == 'reveal'): field.reveal(row, col)
         field.print_field()
-    
+
+if __name__ == "__main__":
+    field = Minefield(6, 6, 8)
+    field.reveal(2, 2)
+    field.print_field()
+    field_matrix = helper_functions.create_field_matrix(field)
