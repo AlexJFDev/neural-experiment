@@ -87,31 +87,25 @@ def reduce_matrix(matrix: np.ndarray, starting_row: int, column_index: int, recu
         reduce_matrix(matrix, starting_row + 1, column_index + 1)
 
 if __name__ == "__main__":
-    input_matrix = np.array(
-        [
-            #A  B  C  D  E  F  G  H  I  J  K  constants
-            [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1], # 1
-            [0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1], # 2
-            [0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1], # 3
-            [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1], # 4
-            [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1], # 5
-            [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1], # 6
-            [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1], # 7
+    input_matrix = np.array([
+            [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+            [0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1],
+            [0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+            [0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1],
+            [0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
+            [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 2]
         ]
     )
-    output_matrix = np.array(
-        [
-            #A  B  C  D  E  F  G  H  I  J  K  constants
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1, 0], # 1
-            [0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1], # 2
-            [0, 0, 1, 0, 0,-1, 0, 0, 0, 0, 0, 0], # 3
-            [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], # 4
-            [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1], # 5
-            [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0], # 6
-            [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1], # 7
-        ]
-    )
+    copy = input_matrix.copy()
+    reduce_matrix(copy, 0, 0, recursive=False)
+    reduce_matrix(copy, 1, 1, recursive=False)
+    reduce_matrix(copy, 2, 2, recursive=False)
+    reduce_matrix(copy, 3, 3, recursive=False)
+    reduce_matrix(copy, 4, 4, recursive=False)
+    #reduce_matrix(copy, 5, 5, recursive=False)
+    #print(copy)
     reduce_matrix(input_matrix, 0, 0)
     print(input_matrix)
-    print()
-    print(output_matrix)
