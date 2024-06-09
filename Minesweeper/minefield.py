@@ -81,6 +81,9 @@ class Minefield:
     def _get_field(self):
         return self.__field
     
+    def _get_num_mines(self):
+        return self.__num_mines
+    
     def print_field(self):
         print(Minefield.stringify_field(self.__field))
 
