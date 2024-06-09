@@ -55,13 +55,14 @@ def get_2d_neighbors(x, y, x_max, y_max):
     neighbors.remove((x, y))
     return neighbors
 
-def reduce_matrix(matrix: np.ndarray, starting_row: int, column_index: int):
+def reduce_matrix(matrix: np.ndarray, starting_row: int, column_index: int, recursive=True):
     column = (matrix[:, column_index])
     row_index = starting_row
     while row_index < column.shape[0] and column[row_index] == 0: # Find the first non-zero row in the column
         row_index += 1
         if row_index == column.shape[0]:
-            reduce_matrix(matrix, starting_row, column_index + 1) # No reduction is possible in this column
+            if recursive: 
+                reduce_matrix(matrix, starting_row, column_index + 1) # No reduction is possible in this column
             return
 
     matrix[[row_index, starting_row]] = matrix[[starting_row, row_index]] # Swap the non-zero row with the starting row
@@ -82,7 +83,8 @@ def reduce_matrix(matrix: np.ndarray, starting_row: int, column_index: int):
 
     if (starting_row == matrix.shape[0] - 1):
         return
-    reduce_matrix(matrix, starting_row + 1, column_index + 1)
+    if recursive: 
+        reduce_matrix(matrix, starting_row + 1, column_index + 1)
 
 if __name__ == "__main__":
     input_matrix = np.array(
