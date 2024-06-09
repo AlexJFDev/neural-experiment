@@ -3,13 +3,57 @@ import field
 from minefield import Minefield
 
 def create_field_matrix(minefield: Minefield) -> np.ndarray:
+    coord_to_col = {}
+    col_to_coord = {}
+    matrix_width = 0 # Width not including constant column (width - 1)
+    constants = [] # will become last column of matrix
+    rows = []
     field = minefield._get_field()
     height, width = field.shape
     for i in range(height):
         for j in range(width):
-            if field[i, j] != -1:
-                pass # Check surroundings
-    print(field.shape)
+            constant = field[i, j]
+            if constant > 0:
+                coords = get_2d_neighbors(i, j, height, width)
+                cols = []
+                for coord in coords:
+                    x, y = coord
+                    value = field[x, y] # -1 is flag, -2 is unknown
+                    if (value == -1):
+                        constant -= 1 # If there is a flag, the tile has one fewer unknown mines
+                    elif (value == -2):
+                        col = coord_to_col.get(coord)
+                        if col is None:
+                            col = matrix_width
+                            matrix_width += 1
+                            coord_to_col[coord] = col
+                            col_to_coord[col] = coord
+                        cols.append(col)
+                    if constant == 0: break
+                if constant == 0: continue
+                constants.append([constant])
+                rows.append(cols)
+    field_matrix = np.zeros((len(constants), matrix_width), dtype=int)
+    for row_index in range(len(rows)):
+        row = rows[row_index]
+        field_matrix[row_index][row] = 1
+    field_matrix = np.concatenate([field_matrix, constants], axis=1)
+    print(col_to_coord)
+    return field_matrix
+
+def get_neighbors(x, max):
+    if (x == 0): return {x, x + 1}
+    if (x == max - 1): return {x - 1, x}
+    return {x - 1, x, x + 1}
+
+def get_2d_neighbors(x, y, x_max, y_max):
+    neighbors = {
+        (row, col)
+        for row in get_neighbors(x, x_max)
+        for col in get_neighbors(y, y_max)
+    }
+    neighbors.remove((x, y))
+    return neighbors
 
 def reduce_matrix(matrix: np.ndarray, starting_row: int, column_index: int):
     column = (matrix[:, column_index])

@@ -36,7 +36,10 @@ def play_game():
         field.print_field()
 
 if __name__ == "__main__":
-    field = Minefield(6, 6, 8)
+    field = Minefield(5, 5, 5)
     field.reveal(2, 2)
     field.print_field()
     field_matrix = helper_functions.create_field_matrix(field)
+    print(field_matrix)
+    helper_functions.reduce_matrix(field_matrix, 0, 0)
+    print(field_matrix)
