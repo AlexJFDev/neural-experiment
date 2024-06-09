@@ -3,43 +3,42 @@ import field
 from minefield import Minefield
 
 def create_field_matrix(minefield: Minefield) -> np.ndarray:
-    coord_to_col = {}
-    col_to_coord = {}
+    coord_to_col = {} # Each coordinate (that we care about) gets assigned a column in the matrix
+    col_to_coord = {} # Convert back easily
     matrix_width = 0 # Width not including constant column (width - 1)
     constants = [] # will become last column of matrix
-    rows = []
+    rows = [] # Each row in this list says which columns should be 1's
     field = minefield._get_field()
     height, width = field.shape
     for i in range(height):
-        for j in range(width):
-            constant = field[i, j]
-            if constant > 0:
+        for j in range(width): # Iterate over the coordinates
+            constant = field[i, j] # The constant IF a matrix row is made
+            if constant > 0: # If it's an edge tile
                 coords = get_2d_neighbors(i, j, height, width)
-                cols = []
-                for coord in coords:
+                cols = [] # The columns of the matrix that will be 1's
+                for coord in coords: # Iterate through neighbors
                     x, y = coord
-                    value = field[x, y] # -1 is flag, -2 is unknown
-                    if (value == -1):
+                    value = field[x, y] # Get the neighbor's value
+                    if (value == -1): # -1 is flag
                         constant -= 1 # If there is a flag, the tile has one fewer unknown mines
-                    elif (value == -2):
-                        col = coord_to_col.get(coord)
-                        if col is None:
+                    elif (value == -2): # -2 is an unknown title
+                        col = coord_to_col.get(coord) # Get the column the coord is equivalent to
+                        if col is None: # Add coord to dicts if it's not there
                             col = matrix_width
                             matrix_width += 1
                             coord_to_col[coord] = col
                             col_to_coord[col] = coord
-                        cols.append(col)
-                    if constant == 0: break
-                if constant == 0: continue
+                        cols.append(col) # Add the column to cols
+                    # if constant == 0: break # If the tile has enough flagged mines we can ignore it
+                # if constant == 0: continue # Except I don't think that's actually true
                 constants.append([constant])
                 rows.append(cols)
-    field_matrix = np.zeros((len(constants), matrix_width), dtype=int)
-    for row_index in range(len(rows)):
-        row = rows[row_index]
-        field_matrix[row_index][row] = 1
-    field_matrix = np.concatenate([field_matrix, constants], axis=1)
-    print(col_to_coord)
-    return field_matrix
+    field_matrix = np.zeros((len(constants), matrix_width), dtype=int) # Create a matrix of 0's
+    for row_index in range(len(rows)): # Fill the matrix in
+        row = rows[row_index] # Each row in rows is a list of numbers. 
+        field_matrix[row_index][row] = 1 # These numbers determine which columns in the row should be 1
+    field_matrix = np.concatenate([field_matrix, constants], axis=1) # Add the constants column
+    return field_matrix, col_to_coord
 
 def get_neighbors(x, max):
     if (x == 0): return {x, x + 1}
