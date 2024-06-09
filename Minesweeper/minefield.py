@@ -29,9 +29,9 @@ class Minefield:
         self.__rows = height
         self.__width = width
         self.__num_mines = num_mines
-        self.__revealed_cords = set()
-        self.__flaged_cords = set()
-        self.__mined_cords = set()
+        self.__revealed_coords = set()
+        self.__flagged_coords = set()
+        self.__mined_coords = set()
         self.__mines_placed = False
 
     def __place_mines(self, x, y):
@@ -43,10 +43,11 @@ class Minefield:
         for i in range(self.__num_mines):
             coord = random.sample(valid_coords, 1)[0]
             valid_coords.remove(coord)
-            self.__mined_cords.add(coord)
+            self.__mined_coords.add(coord)
+        self.__mines_placed = True
     
     def __is_mined(self, x, y):
-        if ((x, y) in self.__mined_cords): return True
+        if ((x, y) in self.__mined_coords): return True
         return False
     
     def __count_surrounding_mines(self, x, y):
@@ -93,52 +94,51 @@ class Minefield:
             return
         if (not self.__mines_placed):
             self.__place_mines(x, y)
-            self.__mines_placed = True
-        if ((x, y) in self.__flaged_cords): 
-            print(f'{x}, {y} is flaged, unflag it first.')
+        if ((x, y) in self.__flagged_coords): 
+            print(f'{x}, {y} is flagged, unflag it first.')
             return
         if (self.__is_mined(x, y)): raise ValueError('You lose!')
-        if ((x, y) in self.__revealed_cords): 
+        if ((x, y) in self.__revealed_coords): 
             print(f'{x}, {y} is already revealed.')
             return
         
-        self.__revealed_cords.add((x, y))
+        self.__revealed_coords.add((x, y))
         surrounding_mines = self.__count_surrounding_mines(x, y)
         self.__field[x, y] = surrounding_mines
         if (surrounding_mines == 0):
             for coord in self.__get_neighboring_coords(x, y):
-                if (coord not in self.__revealed_cords):
+                if (coord not in self.__revealed_coords):
                     self.reveal(*coord)
 
     def flag(self, x, y):
         if (not self.__is_valid_coord(x, y)): 
             print(f'{x}, {y} is out of bounds')
             return
-        if ((x, y) in self.__revealed_cords): 
+        if ((x, y) in self.__revealed_coords): 
             print(f'{x}, {y} is already revealed')
             return
-        if ((x, y) in self.__flaged_cords): 
-            print(f'{x}, {y} is already flaged')
+        if ((x, y) in self.__flagged_coords): 
+            print(f'{x}, {y} is already flagged')
             return
-        self.__flaged_cords.add((x, y))
+        self.__flagged_coords.add((x, y))
         self.__field[x, y] = -1
 
     def unflag(self, x, y):
         if (not self.__is_valid_coord(x, y)): 
             print(f'{x}, {y} is out of bounds')
             return
-        if ((x, y) in self.__revealed_cords): 
+        if ((x, y) in self.__revealed_coords): 
             print(f'{x}, {y} is already revealed')
             return
-        if ((x, y) not in self.__flaged_cords): 
-            print(f'{x}, {y} is not flaged')
+        if ((x, y) not in self.__flagged_coords): 
+            print(f'{x}, {y} is not flagged')
             return
-        self.__flaged_cords.remove((x, y))
+        self.__flagged_coords.remove((x, y))
         self.__field [x, y] = -1
 
     def check_clear(self):
         if (self.__mines_placed == False): return False
-        difference = self.__mined_cords.symmetric_difference(self.__flaged_cords)
+        difference = self.__mined_coords.symmetric_difference(self.__flagged_coords)
         if (len(difference) == 0):
             return True
         return False
