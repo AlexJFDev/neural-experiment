@@ -15,15 +15,19 @@ if __name__ == "__main__":
     while(True):
         inputs = input().split(' ')
         command = inputs[0]
-        if (command == 'check'): 
-            if (field.check_clear()):
-                print('You won!')
-                break
-            else:
-                print('Keep trying!')
-                continue
-        row = int(inputs[1]) - 1
-        col = ord(inputs[2].upper()) - ord('A')
+        try:
+            if (command == 'check'): 
+                if (field.check_clear()):
+                    print('You won!')
+                    break
+                else:
+                    print('Keep trying!')
+                    continue
+            row = int(inputs[1]) - 1
+            col = ord(inputs[2].upper()) - ord('A')
+        except:
+            print('Invalid input')
+            continue
         #system('clear')
         if (command == 'flag'): field.flag(row, col)
         if (command == 'unflag'): field.unflag(row, col)
