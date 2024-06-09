@@ -56,6 +56,10 @@ def get_2d_neighbors(x, y, x_max, y_max):
     return neighbors
 
 def reduce_matrix(matrix: np.ndarray, starting_row: int, column_index: int, recursive=True):
+    if (starting_row == matrix.shape[0]):
+        return
+    if (column_index == matrix.shape[1] - 1):
+        return
     column = (matrix[:, column_index])
     row_index = starting_row
     while row_index < column.shape[0] and column[row_index] == 0: # Find the first non-zero row in the column
@@ -81,8 +85,6 @@ def reduce_matrix(matrix: np.ndarray, starting_row: int, column_index: int, recu
             coefficient = row_i[column_index]
             row_i -= coefficient * row
 
-    if (starting_row == matrix.shape[0] - 1):
-        return
     if recursive: 
         reduce_matrix(matrix, starting_row + 1, column_index + 1)
 
