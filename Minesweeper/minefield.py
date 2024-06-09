@@ -40,7 +40,7 @@ class Minefield:
         all_coords = {(row, col) for row in row_values for col in col_values}
         invalid_coords = self.__get_neighboring_coords(x, y)
         valid_coords = all_coords.difference(invalid_coords)
-        for i in range(self.__num_mines):
+        for _ in range(self.__num_mines):
             coord = random.sample(valid_coords, 1)[0]
             valid_coords.remove(coord)
             self.__mined_coords.add(coord)
@@ -78,6 +78,11 @@ class Minefield:
         if (x < 0 or x >= self.__rows): return False
         if (y < 0 or y >= self.__width): return False
         return True
+
+    def _set_mines(self, mined_coords):
+        self.__mined_coords = set(mined_coords)
+        self.__num_mines = len(mined_coords)
+        self.__mines_placed = True
     
     def _get_field(self):
         return self.__field

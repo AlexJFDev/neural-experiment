@@ -37,6 +37,7 @@ def play_game():
 
 if __name__ == "__main__":
     field = Minefield(5, 5, 5)
+    field._set_mines([(3, 4), (4, 4), (3, 0), (0, 0), (0, 3)])
     field.reveal(2, 2)
     field.print_field()
     field_matrix = helper_functions.create_field_matrix(field)
