@@ -57,14 +57,14 @@ class Minefield:
         return surrounding_mines
 
     def __get_neighboring_rows(self, x):
-        if (x <= 0): return [x, x + 1]
-        if (x >= self.__rows - 1): return [x - 1, x]
-        return [x - 1, x, x + 1]
-    
+        if (x <= 0): return {x, x + 1}
+        if (x >= self.__rows - 1): return {x - 1, x}
+        return {x - 1, x, x + 1}
+
     def __get_neighboring_cols(self, y):
-        if (y <= 0): return [y, y + 1]
-        if (y >= self.__width - 1): return [y - 1, y]
-        return [y - 1, y, y + 1]
+        if (y <= 0): return {y, y + 1}
+        if (y >= self.__width - 1): return {y - 1, y}
+        return {y - 1, y, y + 1}
     
     def __get_neighboring_coords(self, x, y):
         return {
