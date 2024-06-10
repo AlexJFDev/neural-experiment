@@ -54,18 +54,31 @@ def get_2d_neighbors(x, y, x_max, y_max):
     neighbors.remove((x, y))
     return neighbors
 
-def reduce_matrix(matrix: np.ndarray, starting_row: int, column_index: int, recursive=True):
-    if (starting_row == matrix.shape[0]):
-        return
-    if (column_index == matrix.shape[1] - 1):
-        return
+def reduce_matrix(matrix: np.ndarray, starting_row = 0, column_index = 0, recursive=True):
+    """
+    matrix:
+        A 2D numpy array.
+    starting_row:
+        Which row to start looking for a leading coefficient in.
+    column_index:
+        Which column to reduce.
+    recursive:
+        Toggle recursion on and off. Mostly for testing purposes.
+    Recursively performs row reduction (gaussian elimination) on an augmented matrix.
+    Each iteration reduces one column at a time.
+    """
+    # If there are no more rows
+    if (starting_row == matrix.shape[0]): return
+    # If there are no more columns except the augmented column
+    if (column_index == matrix.shape[1] - 1): return
+
     column = (matrix[:, column_index])
     row_index = starting_row
     while row_index < column.shape[0] and column[row_index] == 0: # Find the first non-zero row in the column
         row_index += 1
         if row_index == column.shape[0]:
             if recursive: 
-                reduce_matrix(matrix, starting_row, column_index + 1) # No reduction is possible in this column
+                reduce_matrix(matrix, starting_row=starting_row, column_index=column_index + 1) # No reduction is possible in this column
             return
 
     matrix[[row_index, starting_row]] = matrix[[starting_row, row_index]] # Swap the non-zero row with the starting row
@@ -85,7 +98,53 @@ def reduce_matrix(matrix: np.ndarray, starting_row: int, column_index: int, recu
             row_i -= coefficient * row
 
     if recursive: 
-        reduce_matrix(matrix, starting_row + 1, column_index + 1)
+        reduce_matrix(matrix, starting_row=starting_row + 1, column_index=column_index + 1)
+
+def solve_field_matrix(field_matrix: np.ndarray, column_dictionary: dict):
+    """
+    Solves a field matrix by finding the safe and mined columns.
+
+    Args:
+        field_matrix (np.ndarray): The field matrix to be solved.
+        column_dictionary (dict): A dictionary mapping column indices to coordinates.
+
+    Returns:
+        None
+    Note:
+        The function assumes that the field matrix is a 2D numpy array and the column dictionary maps column indices to coordinates.
+
+    """
+    mined_cols = set()
+    for row in field_matrix:
+        if (np.count_nonzero(row) == 0):
+            continue
+        constant = row[-1]
+        lower_bound = 0
+        upper_bound = 0
+        positives = set()
+        negatives = set()
+        for col_index in range(row.shape[0] - 1):
+            col_val = row[col_index]
+            if col_val < 0:
+                lower_bound += col_val
+                negatives.add(col_index)
+            elif col_val > 0:
+                upper_bound += col_val
+                positives.add(col_index)
+        if lower_bound == constant:
+            mined_cols = mined_cols.union(negatives)
+            safe_cols = safe_cols.union(positives)
+        elif upper_bound == constant:
+            mined_cols = mined_cols.union(positives)
+            safe_cols = safe_cols.union(negatives)
+    for col in mined_cols:
+        coord = column_dictionary[col]
+        print('Flag', coord, col)
+    for col in safe_cols:
+        coord = column_dictionary[col]
+        print('Reveal', coord, col)
+
+
 
 if __name__ == "__main__":
     input_matrix = np.array([
